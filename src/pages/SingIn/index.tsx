@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 import { FiLock, FiLogIn, FiMail } from "react-icons/fi";
 import logo from './../../../public/logo.svg';
 
@@ -26,10 +26,10 @@ function SignIn() {
             <a href="/forgout">Esqueci minha senha</a>
           </form>
 
-          <a href="">
+          <Link to="/auth/signup">
             <FiLogIn />
             Criar Conta
-          </a>
+          </Link>
         </Content>
         <Background />
     </Container>

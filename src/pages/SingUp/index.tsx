@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 import { FiArrowLeft, FiLock, FiLogIn, FiMail, FiUser } from "react-icons/fi";
 import logo from './../../../public/logo.svg';
 
@@ -28,10 +28,10 @@ function SignUp() {
             </ButtonComponent>
           </form>
 
-          <a href="">
+          <Link to="/auth/signin">
             <FiArrowLeft />
             Voltar
-          </a>
+          </Link>
         </Content>
     </Container>
   );
