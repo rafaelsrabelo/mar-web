@@ -28,18 +28,6 @@ export const Content = styled.div`
       margin-bottom: 24px;
     }
 
-    input {
-      background: #292b2a;
-      border-radius: 10px;
-      border: 2px solid #292b2a;
-      padding: 16px;
-      width: 100%;
-      height: 48px;
-      & + input {
-        margin-top: 8px;
-      }
-    }
-
     button {
       background: #bd02f0;
       height: 48px;
