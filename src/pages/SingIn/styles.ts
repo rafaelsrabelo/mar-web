@@ -28,6 +28,32 @@ export const Content = styled.div`
       margin-bottom: 24px;
     }
 
+    div.input-div {
+      background: #292b2a;
+      border-radius: 10px;
+      border: 2px solid #292b2a;
+      padding: 16px;
+      width: 100%;
+      height: 48px;
+
+      display: flex;
+      align-items: center;
+
+      & + div {
+        margin-top: 8px;
+      }
+
+      input {
+        flex: 1;
+        background: #292b2a;
+        border: 0;
+      }
+
+      svg {
+        margin-right: 16px;
+      }
+    }
+
     a {
       color: #f4ede8;
       display: block;
