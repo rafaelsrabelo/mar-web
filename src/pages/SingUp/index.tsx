@@ -1,43 +1,69 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { InputComponent } from "../../components/Input";
 import { ButtonComponent } from "../../components/Button";
-
+import { FormHandles } from "@unform/core";
 import { Background, Container, Content } from "./styles";
-
-import { FiArrowLeft, FiLock, FiLogIn, FiMail, FiUser } from "react-icons/fi";
-
-const signUpForm = z.object({
-  name: z.string(),
-  email: z.string().email(),
-  password: z.string().min(6),
-  confirmation_password: z.string().min(6),
-});
-const signUpFormWithValidation = signUpForm.refine(data => data.password === data.confirmation_password, {
-  message: "A senha e a confirmação de senha devem ser iguais",
-});
-
-type SignUpForm = z.infer<typeof signUpFormWithValidation>;
+import * as Yup from "yup";
+import { FiArrowLeft, FiLock, FiMail, FiUser } from "react-icons/fi";
+import { api } from "../../services/api";
+import { toast } from "react-toastify";
 
 function SignUp() {
+  const formRef = useRef<FormHandles>(null);
+
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
+    reset,
   } = useForm();
 
-  async function handleSignUp(data: SignUpForm) {
+  async function handleSignUp(data: any) {
     const user = {
       name: data.name,
       email: data.email,
-      password: data.password
+      password: data.password,
+    };
+
+    try {
+      const schema = Yup.object().shape({
+        name: Yup.string().required("Nome obrigatório"),
+        email: Yup.string()
+          .required("E-mail obrigatório")
+          .email("Digite um email válido"),
+        password: Yup.string().min(6, "No mínimo 6 dígitos"),
+      });
+
+      await schema.validate(data, { abortEarly: false });
+
+      const response = await api.post("/auth/signup", user);
+
+      if (response.status === 201) {
+        console.log("Cadastro realizado com sucesso!");
+        reset();
+        toast.success("Conta criada");
+      } else {
+        toast.error("Erro ao cadastrar. Verifique os dados e tente novamente.");
+
+        if (response.status === 409) {
+          toast.error("E-mail já cadastrado. Por favor, escolha outro e-mail.");
+        }
+
+        console.error("Falha no cadastro. Status:", response.status);
+      }
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        // Exibindo mensagens de erro do Yup usando toast
+        error.errors.forEach((errorMsg: string) => {
+          toast.error(errorMsg);
+        });
+      } else if (error.response) {
+        toast.error(error.response.data.message);
+      } else {
+        console.error("Erro durante o cadastro:", error.message);
+      }
     }
-
-
-    console.log(user);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
   }
 
   return (
@@ -46,47 +72,24 @@ function SignUp() {
       <Content>
         <img src="/logo.svg" alt="Mar. Saúde" />
 
-        <form onSubmit={handleSubmit(handleSignUp)}>
+        <form ref={formRef} onSubmit={handleSubmit(handleSignUp)}>
           <h1>Faça seu cadastro</h1>
 
           <div className="input-div">
             <FiUser size={20} />
-            <input
-              {...register("name")}
-              // icon={FiUser}
-              placeholder="Nome completo"
-            />
+            <input {...register("name")} placeholder="Nome completo" />
           </div>
-
           <div className="input-div">
             <FiMail size={20} />
-
-            <input
-              {...register("email")}
-              // icon={FiMail}
-              placeholder="Email"
-            />
+            <input {...register("email")} placeholder="Email" />
           </div>
 
           <div className="input-div">
             <FiLock size={20} />
-
             <input
               {...register("password")}
-              // icon={FiLock}
               type="password"
               placeholder="Senha"
-            />
-          </div>
-
-          <div className="input-div">
-            <FiLock size={20} />
-
-            <input
-              {...register("confirmation_password")}
-              // icon={FiLock}
-              type="password"
-              placeholder="Confirmar Senha"
             />
           </div>
 
@@ -94,6 +97,25 @@ function SignUp() {
             Cadastrar
           </ButtonComponent>
         </form>
+
+        <div className="error-messages">
+          {errors.name && (
+            <span className="error-message">
+              {String(errors.name?.message)}
+            </span>
+          )}
+          {errors.email && (
+            <span className="error-message">
+              {String(errors.email?.message)}
+            </span>
+          )}
+          {errors.password && (
+            <span className="error-message">
+              {String(errors.password?.message)}
+            </span>
+          )}
+        </div>
+
         <Link to="/auth/signin">
           <FiArrowLeft />
           Voltar
