@@ -11,13 +11,13 @@ export const Container = styled.div`
       display: flex;
       align-items: center;
 
-      & + div {
+      & + input {
         margin-top: 8px;
       }
 
       input {
         flex: 1;
-        background: #292b2a;
+        background: #292b2a ;
         border: 0;
 
     }

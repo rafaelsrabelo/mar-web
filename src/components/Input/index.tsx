@@ -11,7 +11,7 @@ export function InputComponent({ icon: Icon, ...rest}: InputProps) {
     return (
         <Container>
             { Icon && <Icon size={20}/> }
-            <input  type="text" {...rest} />
+            <input type="text" {...rest} />
         </Container>
     )
 }

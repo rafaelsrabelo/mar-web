@@ -1,38 +1,104 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FiArrowLeft, FiLock, FiLogIn, FiMail, FiUser } from "react-icons/fi";
-import logo from './../../../public/logo.svg';
-
-import { Background, Container, Content } from "./styles";
-import {InputComponent} from "../../components/Input";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { InputComponent } from "../../components/Input";
 import { ButtonComponent } from "../../components/Button";
 
+import { Background, Container, Content } from "./styles";
+
+import { FiArrowLeft, FiLock, FiLogIn, FiMail, FiUser } from "react-icons/fi";
+
+const signUpForm = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  password: z.string().min(6),
+  confirmation_password: z.string().min(6),
+});
+const signUpFormWithValidation = signUpForm.refine(data => data.password === data.confirmation_password, {
+  message: "A senha e a confirmação de senha devem ser iguais",
+});
+
+type SignUpForm = z.infer<typeof signUpFormWithValidation>;
+
 function SignUp() {
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm();
+
+  async function handleSignUp(data: SignUpForm) {
+    const user = {
+      name: data.name,
+      email: data.email,
+      password: data.password
+    }
+
+
+    console.log(user);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+
   return (
     <Container>
-        <Background />
-        <Content>
-          <img src={logo} alt="Mar. Saúde"/>
+      <Background />
+      <Content>
+        <img src="/logo.svg" alt="Mar. Saúde" />
 
-          <form>
-            <h1>Faça seu cadastro</h1>
+        <form onSubmit={handleSubmit(handleSignUp)}>
+          <h1>Faça seu cadastro</h1>
 
-            <InputComponent icon={FiUser} name="nome" placeholder="Nome Completo" />
+          <div className="input-div">
+            <FiUser size={20} />
+            <input
+              {...register("name")}
+              // icon={FiUser}
+              placeholder="Nome completo"
+            />
+          </div>
 
-            <InputComponent icon={FiMail} name="email" placeholder="Email" />
-            
-            <InputComponent icon={FiLock} name="password" type="password" placeholder="Senha" />
+          <div className="input-div">
+            <FiMail size={20} />
 
-            <ButtonComponent>
-              Cadastrar
-            </ButtonComponent>
-          </form>
+            <input
+              {...register("email")}
+              // icon={FiMail}
+              placeholder="Email"
+            />
+          </div>
 
-          <Link to="/auth/signin">
-            <FiArrowLeft />
-            Voltar
-          </Link>
-        </Content>
+          <div className="input-div">
+            <FiLock size={20} />
+
+            <input
+              {...register("password")}
+              // icon={FiLock}
+              type="password"
+              placeholder="Senha"
+            />
+          </div>
+
+          <div className="input-div">
+            <FiLock size={20} />
+
+            <input
+              {...register("confirmation_password")}
+              // icon={FiLock}
+              type="password"
+              placeholder="Confirmar Senha"
+            />
+          </div>
+
+          <ButtonComponent disabled={isSubmitting} type="submit">
+            Cadastrar
+          </ButtonComponent>
+        </form>
+        <Link to="/auth/signin">
+          <FiArrowLeft />
+          Voltar
+        </Link>
+      </Content>
     </Container>
   );
 }

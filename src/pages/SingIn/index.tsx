@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FiLock, FiLogIn, FiMail } from "react-icons/fi";
-import logo from './../../../public/logo.svg';
 
 import { Background, Container, Content } from "./styles";
 import {InputComponent} from "../../components/Input";
@@ -11,7 +10,7 @@ function SignIn() {
   return (
     <Container>
         <Content>
-          <img src={logo} alt="Mar. Saúde"/>
+          <img src='/logo.svg'alt="Mar. Saúde"/>
 
           <form>
             <h1>Faça seu logon</h1>
