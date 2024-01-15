@@ -19,7 +19,7 @@ function SignUp() {
     reset,
   } = useForm();
 
-  async function handleSignUp(data: any) {
+  async function handleSignup(data: any) {
     const user = {
       name: data.name,
       email: data.email,
@@ -72,7 +72,7 @@ function SignUp() {
       <Content>
         <img src="/logo.svg" alt="Mar. Saúde" />
 
-        <form ref={formRef} onSubmit={handleSubmit(handleSignUp)}>
+        <form ref={formRef} onSubmit={handleSubmit(handleSignup)}>
           <h1>Faça seu cadastro</h1>
 
           <div className="input-div">
@@ -97,24 +97,6 @@ function SignUp() {
             Cadastrar
           </ButtonComponent>
         </form>
-
-        <div className="error-messages">
-          {errors.name && (
-            <span className="error-message">
-              {String(errors.name?.message)}
-            </span>
-          )}
-          {errors.email && (
-            <span className="error-message">
-              {String(errors.email?.message)}
-            </span>
-          )}
-          {errors.password && (
-            <span className="error-message">
-              {String(errors.password?.message)}
-            </span>
-          )}
-        </div>
 
         <Link to="/auth/signin">
           <FiArrowLeft />
