@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { shade } from "polished";
 import signUpBackgroundImg from "../../../public/background-signup.png";
 
@@ -14,10 +14,30 @@ export const Content = styled.div`
   flex-direction: column;
   align-items: center;
 
-  place-content: center;
+  justify-content: center;
 
   width: 100%;
   max-width: 700px;
+`;
+
+export const appeearFromRight = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`
+
+export const AnimationContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  animation: ${appeearFromRight} 1s;
 
   form {
     margin: 80px 0;
@@ -83,7 +103,6 @@ export const Content = styled.div`
       color: ${shade(0.2, "#bd02f0")};
     }
   }
-
 `;
 
 export const Background = styled.div`

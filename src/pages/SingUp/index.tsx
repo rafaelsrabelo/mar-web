@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { ButtonComponent } from "../../components/Button";
 import { FormHandles } from "@unform/core";
-import { Background, Container, Content } from "./styles";
+import { Background, Container, Content, AnimationContainer } from "./styles";
 import * as Yup from "yup";
 import { FiArrowLeft, FiLock, FiMail, FiUser } from "react-icons/fi";
 import { api } from "../../services/api";
@@ -70,38 +70,40 @@ function SignUp() {
     <Container>
       <Background />
       <Content>
-        <img src="/logo.svg" alt="Mar. Saúde" />
+        <AnimationContainer>
+          <img src="/logo.svg" alt="Mar. Saúde" />
 
-        <form ref={formRef} onSubmit={handleSubmit(handleSignup)}>
-          <h1>Faça seu cadastro</h1>
+          <form ref={formRef} onSubmit={handleSubmit(handleSignup)}>
+            <h1>Faça seu cadastro</h1>
 
-          <div className="input-div">
-            <FiUser size={20} />
-            <input {...register("name")} placeholder="Nome completo" />
-          </div>
-          <div className="input-div">
-            <FiMail size={20} />
-            <input {...register("email")} placeholder="Email" />
-          </div>
+            <div className="input-div">
+              <FiUser size={20} />
+              <input {...register("name")} placeholder="Nome completo" />
+            </div>
+            <div className="input-div">
+              <FiMail size={20} />
+              <input {...register("email")} placeholder="Email" />
+            </div>
 
-          <div className="input-div">
-            <FiLock size={20} />
-            <input
-              {...register("password")}
-              type="password"
-              placeholder="Senha"
-            />
-          </div>
+            <div className="input-div">
+              <FiLock size={20} />
+              <input
+                {...register("password")}
+                type="password"
+                placeholder="Senha"
+              />
+            </div>
 
-          <ButtonComponent disabled={isSubmitting} type="submit">
-            Cadastrar
-          </ButtonComponent>
-        </form>
+            <ButtonComponent disabled={isSubmitting} type="submit">
+              Cadastrar
+            </ButtonComponent>
+          </form>
 
-        <Link to="/auth/signin">
-          <FiArrowLeft />
-          Voltar
-        </Link>
+          <Link to="/auth/signin">
+            <FiArrowLeft />
+            Voltar
+          </Link>
+        </AnimationContainer>
       </Content>
     </Container>
   );
