@@ -8,7 +8,7 @@ import { ButtonComponent } from "../../components/Button";
 import { FormHandles } from "@unform/core";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 interface SignInFormData {
   email: string;
@@ -26,8 +26,8 @@ function SignIn() {
     reset,
   } = useForm();
 
-  const { signIn, name } = useContext(AuthContext);
-  console.log(`meu nome é ${name}`);
+  const { signIn, name } = useAuth();
+  console.log(`meu nome é ${name}`)
 
   const handleSignin = useCallback(async (data: SignInFormData) => {
     try {
