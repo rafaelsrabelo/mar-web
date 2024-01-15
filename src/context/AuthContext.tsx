@@ -21,7 +21,7 @@ interface AuthContextProps {
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 
-const AuthProvider: React.FC = ({ children }) => {
+const AuthProvider: React.FC = ({ children }: any) => {
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem("@mar:token");
     const name = localStorage.getItem("@mar:name");
