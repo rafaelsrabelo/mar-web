@@ -13,7 +13,7 @@ export const Container = styled.div`
     border-bottom: 1px solid #6a6a6d;
 
     img {
-        height: 36px;
+        height: 28px;
     }
     div {
         display: flex;

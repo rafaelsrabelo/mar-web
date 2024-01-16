@@ -2,7 +2,6 @@ import React from "react";
 import { Container } from "./styles";
 import { NavItem } from "../NavItem";
 import { CircleUser, Home } from "lucide-react";
-import { Logout } from "../Logout";
 
 export default function SideBar() {
   return (
