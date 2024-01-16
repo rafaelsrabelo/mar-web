@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { api } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 interface AuthState {
   token: string;
@@ -32,7 +33,6 @@ const AuthProvider: React.FC = ({ children }: any) => {
 
     return {} as AuthState;
   });
-
   const signIn = useCallback(async ({ email, password }) => {
     try {
       const response = await api.post("/auth/signin", { email, password });
@@ -44,6 +44,7 @@ const AuthProvider: React.FC = ({ children }: any) => {
       localStorage.setItem("@mar:email", userEmail);
 
       setData({ token, name, email: userEmail });
+
     } catch (error) {
       console.error("Error during signIn:", error.message);
     }

@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useRef } from "react";
-import { Link, Navigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiLock, FiLogIn, FiMail } from "react-icons/fi";
 import * as Yup from "yup";
 import { AnimationContainer, Background, Container, Content } from "./styles";
@@ -17,8 +16,6 @@ interface SignInFormData {
 
 function SignIn() {
   const formRef = useRef<FormHandles>(null);
-  const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
@@ -27,8 +24,7 @@ function SignIn() {
   } = useForm();
 
   const { signIn, name } = useAuth();
-  console.log(`meu nome é ${name}`);
-
+  const navigate = useNavigate();
   const handleSignin = useCallback(
     async (data: SignInFormData) => {
       try {
@@ -39,13 +35,15 @@ function SignIn() {
 
         await schema.validate(data, { abortEarly: false });
 
-        signIn({
+        await signIn({
           email: data.email,
           password: data.password,
         });
+
+        navigate("/home");
+        toast.success(`Usuário logado: ${data.email}`)
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
-
           error.errors.forEach((errorMsg: string) => {
             toast.error(errorMsg);
           });
@@ -67,14 +65,19 @@ function SignIn() {
         <AnimationContainer>
           <img src="/logo.svg" alt="Mar. Saúde" />
 
-          <form ref={formRef} onSubmit={handleSubmit(handleSignin)}>
+          <form
+            ref={formRef}
+            onSubmit={(event) => {
+              event.preventDefault(); // Evitar recarregar a página
+              handleSubmit(handleSignin)(event);
+            }}
+          >
+            {" "}
             <h1>Faça seu logon</h1>
-
             <div className="input-div">
               <FiMail size={20} />
               <input {...register("email")} placeholder="Email" />
             </div>
-
             <div className="input-div">
               <FiLock size={20} />
               <input
@@ -83,7 +86,6 @@ function SignIn() {
                 placeholder="Senha"
               />
             </div>
-
             <ButtonComponent type="submit" disabled={isSubmitting}>
               Entrar
             </ButtonComponent>

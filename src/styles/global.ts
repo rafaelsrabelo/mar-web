@@ -6,8 +6,9 @@ export default createGlobalStyle`
         padding: 0;
         box-sizing: border-box;
         outline: 0;
+        overflow: hidden;
     }
-
+    
     body {
         background: #1F1E24;
         color: #ffffff;
@@ -26,4 +27,14 @@ export default createGlobalStyle`
     button {
         cursor: pointer;
     }
+    .max-width-content {
+        max-width: 800px;
+        margin: 0 auto; 
+    }
+
+    .no-center {
+        max-width: 1000px; 
+        margin: 0;
+    }
+
 `;
