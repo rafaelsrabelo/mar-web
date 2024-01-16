@@ -41,7 +41,6 @@ function SignIn() {
         });
 
         navigate("/home");
-        toast.success(`Usuário logado: ${data.email}`)
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
           error.errors.forEach((errorMsg: string) => {

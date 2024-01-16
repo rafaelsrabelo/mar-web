@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface AuthState {
   token: string;
@@ -36,19 +37,30 @@ const AuthProvider: React.FC = ({ children }: any) => {
   const signIn = useCallback(async ({ email, password }) => {
     try {
       const response = await api.post("/auth/signin", { email, password });
-      console.log(response.data);
-      const { acess_token: token, name, userEmail } = response.data;
-
+      const { access_token: token, name, userEmail } = response.data;
+  
       localStorage.setItem("@mar:token", token);
       localStorage.setItem("@mar:name", name);
       localStorage.setItem("@mar:email", userEmail);
-
+  
       setData({ token, name, email: userEmail });
-
+  
+      toast.success(`Usuário logado: ${localStorage.getItem("@mar:name")}`);
     } catch (error) {
-      console.error("Error during signIn:", error.message);
+      if (error.response) {
+        const { status, data } = error.response;
+  
+        if (status === 401) {
+          toast.error("Senha incorreta. Tente novamente.");
+        } else {
+          toast.error(`Erro durante o login: ${data.message}`);
+        }
+      } else {
+        console.error("Erro durante o login:", error.message);
+      }
     }
   }, []);
+  
 
   const logout = useCallback(() => {
     localStorage.removeItem("@mar:token");
