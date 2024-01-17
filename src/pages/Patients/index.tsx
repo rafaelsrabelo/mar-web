@@ -30,6 +30,19 @@ export default function Patiences() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+  const handleOpenDetailsModal = (order: Order) => {
+    setSelectedOrder(order);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setSelectedOrder(null);
+    setIsDetailsModalOpen(false);
+  };
+
   const handleLogout = () => {
     logout();
     navigate("/auth/signin");
@@ -77,6 +90,49 @@ export default function Patiences() {
     }
   };
 
+  const handlePatientCancel = async (orderId: string) => {
+    try {
+      const token = localStorage.getItem("@mar:token");
+
+      await api.put(
+        `/orders/${orderId}`,
+        { status: "canceled" },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success("Atendimento cancelado!");
+      getOrders();
+    } catch (error) {
+      toast.error("Erro ao cancelar triagem:", error.message);
+    }
+  };
+
+  const handlePatientFinish = async (orderId: string) => {
+    try {
+      const token = localStorage.getItem("@mar:token");
+
+      await api.put(
+        `/orders/${orderId}`,
+        { status: "done" },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success("Atendimento finalizado!");
+      getOrders();
+      handleCloseDetailsModal();
+    } catch (error) {
+      toast.error("Erro ao finalizar atendimento:", error.message);
+    }
+  };
+
   const getOrders = async () => {
     try {
       const token = localStorage.getItem("@mar:token");
@@ -117,6 +173,8 @@ export default function Patiences() {
         return "Aguardando";
       case "done":
         return "Atendido";
+      case "canceled":
+        return "Cancelado";
       default:
         return status;
     }
@@ -139,49 +197,7 @@ export default function Patiences() {
             <div className="">
               <h1 className="text-3xl font-bold">Pacientes</h1>
 
-              <Modal open={isModalOpen} onClose={handleCloseModal}>
-                <h2 className="mt-4 text-center mb-2 text-2xl text-gray-100">
-                  Cadastro do paciente
-                </h2>
-                <form className="flex flex-col items-center">
-                  <div className="mb-4 w-full">
-                    <label htmlFor="clientName" className="text-gray-100">
-                      Nome do Paciente
-                    </label>
-                    <input
-                      type="text"
-                      id="clientName"
-                      placeholder="Digite o nome do paciente"
-                      className="w-full py-2 px-4 border rounded-md bg-gray-800"
-                      value={patientName}
-                      onChange={(e) => setPatientName(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="mb-4 w-full">
-                    <label htmlFor="triage" className="text-gray-100">
-                      Triagem do Paciente
-                    </label>
-                    <textarea
-                      id="triage"
-                      placeholder="Digite a triagem do paciente"
-                      className="w-full py-2 px-4 border rounded-md bg-gray-800 resize-y"
-                      rows={4}
-                      value={patientTriage}
-                      onChange={(e) => setPatientTriage(e.target.value)}
-                    />
-                  </div>
-
-                  <button
-                    type="button"
-                    className="button-primary"
-                    onClick={handlePatientSubmit}
-                  >
-                    Cadastrar
-                  </button>
-                </form>
-              </Modal>
-              <div className="mt-4 grid grid-cols-4 gap-4 cards">
+              <div className="mt-4 grid grid-cols-4 gap-4 cards relative">
                 {loading ? (
                   <p>Loading...</p>
                 ) : (
@@ -200,6 +216,8 @@ export default function Patiences() {
                           className={`status-label text-sm ${
                             order.status === "done"
                               ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-1 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                              : order.status === "canceled"
+                              ? "bg-red-100 text-red-800 text-xs font-medium me-2 px-1 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
                               : "bg-blue-100 text-blue-800 text-xs font-medium me-2 px-1 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
                           }`}
                         >
@@ -208,13 +226,23 @@ export default function Patiences() {
                         <div className="flex mt-2">
                           <button
                             className={`btn-cancel rounded-md px-1 py-1 text-sm flex-grow ${
-                              order.status === "done" ? "disabled" : ""
+                              order.status === "done" ||
+                              order.status === "canceled"
+                                ? "disabled"
+                                : ""
                             }`}
-                            disabled={order.status === "done"}
+                            disabled={
+                              order.status === "done" ||
+                              order.status === "canceled"
+                            }
+                            onClick={() => handlePatientCancel(order.id)}
                           >
                             Cancelar
                           </button>
-                          <button className="btn-details rounded-md px-1 py-1 ms-2 text-sm flex-grow">
+                          <button
+                            className={`btn-details rounded-md px-1 py-1 ms-2 text-sm flex-grow`}
+                            onClick={() => handleOpenDetailsModal(order)}
+                          >
                             Ver Detalhes
                           </button>
                         </div>
@@ -223,7 +251,55 @@ export default function Patiences() {
                   ))
                 )}
               </div>
+
+              {isModalOpen && (
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex justify-center items-center">
+                  <Modal open={isModalOpen} onClose={handleCloseModal}>
+                    <h2 className="mt-4 text-center mb-2 text-2xl text-gray-100">
+                      Cadastro do paciente
+                    </h2>
+                    <form className="flex flex-col items-center">
+                      <div className="mb-4 w-full">
+                        <label htmlFor="clientName" className="text-gray-100">
+                          Nome do Paciente
+                        </label>
+                        <input
+                          type="text"
+                          id="clientName"
+                          placeholder="Digite o nome do paciente"
+                          className="w-full py-2 px-4 border rounded-md bg-gray-800"
+                          value={patientName}
+                          onChange={(e) => setPatientName(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="mb-4 w-full">
+                        <label htmlFor="triage" className="text-gray-100">
+                          Triagem do Paciente
+                        </label>
+                        <textarea
+                          id="triage"
+                          placeholder="Digite a triagem do paciente"
+                          className="w-full py-2 px-4 border rounded-md bg-gray-800 resize-y"
+                          rows={4}
+                          value={patientTriage}
+                          onChange={(e) => setPatientTriage(e.target.value)}
+                        />
+                      </div>
+
+                      <button
+                        type="button"
+                        className="button-primary"
+                        onClick={handlePatientSubmit}
+                      >
+                        Cadastrar
+                      </button>
+                    </form>
+                  </Modal>
+                </div>
+              )}
             </div>
+
             <div className="fixed bottom-4 right-4">
               <button
                 className="flex items-center justify-center modal-open w-full"
@@ -236,6 +312,42 @@ export default function Patiences() {
           </main>
         </div>
       </Content>
+
+      {selectedOrder && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex justify-center items-center">
+          <Modal open={isDetailsModalOpen} onClose={handleCloseDetailsModal}>
+            <h2 className="mt-4 text-center mb-2 text-2xl text-gray-100">
+              Detalhes da Triagem
+            </h2>
+            <p>Nome do Paciente: {selectedOrder.customer}</p>
+            <p className="mt-2">Triagem: {selectedOrder.address}</p>
+
+            <div className="mt-4 flex">
+              <button
+                className={`flex-grow btn-details text-white px-4 py-2 rounded-md ${
+                  selectedOrder.status === "done" ||
+                  selectedOrder.status === "canceled"
+                    ? "disabled"
+                    : ""
+                }`}
+                disabled={
+                  selectedOrder.status === "done" ||
+                  selectedOrder.status === "canceled"
+                }
+                onClick={() => handlePatientFinish(selectedOrder.id)}
+                style={
+                  selectedOrder.status === "done" ||
+                  selectedOrder.status === "canceled"
+                    ? { cursor: "not-allowed" }
+                    : {}
+                }
+              >
+                Finalizar Atendimento
+              </button>
+            </div>
+          </Modal>
+        </div>
+      )}
     </Container>
   );
 }

@@ -2,6 +2,14 @@ import styled from "styled-components";
 import { shade } from "polished";
 
 export const Container = styled.div`
+  .btn-details {
+    border: 1px solid #10b981;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: ${shade(0.2, "#10B981")};
+    }
+  }
   header {
     display: flex;
     align-items: center;
@@ -107,6 +115,23 @@ export const Content = styled.div`
 
     &:hover {
       background: ${shade(0.2, "#BD02F0")};
+    }
+  }
+
+  button.button-secondary {
+    background: #10B981;
+    height: 48px;
+    border-radius: 10px;
+    border: 0;
+    padding: 0 16px;
+    color: #ffffff;
+    width: 100%;
+    font-weight: bold;
+    margin-top: 16px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: ${shade(0.2, "#10B981")};
     }
   }
 `;
