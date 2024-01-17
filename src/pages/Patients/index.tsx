@@ -172,7 +172,7 @@ export default function Patiences() {
       case "opened":
         return "Aguardando";
       case "done":
-        return "Atendido";
+        return "Finalizado";
       case "canceled":
         return "Cancelado";
       default:
