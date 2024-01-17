@@ -67,7 +67,7 @@ function SignIn() {
           <form
             ref={formRef}
             onSubmit={(event) => {
-              event.preventDefault(); // Evitar recarregar a página
+              event.preventDefault();
               handleSubmit(handleSignin)(event);
             }}
           >

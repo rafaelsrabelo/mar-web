@@ -23,6 +23,50 @@ export const Container = styled.div`
       }
     }
   }
+  .cards {
+    .card {
+      .card-header {
+        background: #414953;
+        padding: 4px 8px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+
+        width: 246px;
+      }
+
+      .card-body {
+        padding: 4px 8px;
+        background: #262a30;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
+
+      & + .card {
+      }
+
+      .btn-cancel {
+        border: 1px solid #ef4444;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background: ${shade(0.2, "#EF4444")};
+        }
+      }
+
+      .btn-details {
+        border: 1px solid #10b981;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background: ${shade(0.2, "#10B981")};
+        }
+      }
+      .disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    }
+  }
 `;
 
 export const Content = styled.div`
@@ -31,7 +75,7 @@ export const Content = styled.div`
   background-color: #1f1e24;
 
   button.modal-open {
-    padding: 4px 8px;
+    padding: 14px 18px;
     border-radius: 10px;
     border: 1px solid #999;
     color: #ffffff;
