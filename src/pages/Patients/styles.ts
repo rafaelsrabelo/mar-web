@@ -53,8 +53,8 @@ export const Container = styled.div`
       }
 
       .btn-cancel {
-        border: 1px solid #ef4444;
         transition: background-color 0.2s;
+        background: #EF4444;
 
         &:hover {
           background: ${shade(0.2, "#EF4444")};
@@ -62,9 +62,8 @@ export const Container = styled.div`
       }
 
       .btn-details {
-        border: 1px solid #10b981;
+        background: #10B981;
         transition: background-color 0.2s;
-
         &:hover {
           background: ${shade(0.2, "#10B981")};
         }
